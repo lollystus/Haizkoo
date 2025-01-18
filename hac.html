@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trắc Nghiệm</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            text-align: center;
+            background-color: #f4f4f9;
+            padding: 20px;
+            background-image: url('https://i.imgur.com/mKEv0PK.jpeg'); /* Thay đổi URL ảnh nền tại đây */
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+        }
+
+        .quiz-container {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8); /* Đặt nền mờ cho nội dung để dễ đọc */
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .question {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .options {
+            margin-top: 20px;
+        }
+
+        .button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            text-align: center;
+            font-size: 1.1em;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 10px;
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        .button:hover {
+            background-color: #45a049;
+            transform: scale(1.1);
+        }
+
+        .doremon-img {
+            margin-top: 20px;
+            width: 150px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .quiz-result {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #333;
+            margin-top: 30px;
+        }
+
+        .emoji {
+            font-size: 2em;
+            margin-top: 20px;
+        }
+
+        .message {
+            font-size: 1.2em;
+            color: #555;
+            margin-top: 10px;
+        }
+
+        .gif {
+            margin-top: 30px;
+            width: 300px;
+            height: 300px;
+            border-radius: 15px;
+        }
+
+        .feedback {
+            font-size: 1.2em;
+            color: #ff0000;
+            margin-top: 10px;
+        }
+        
+        .correct {
+            color: #28a745;
+        }
+
+        .incorrect {
+            color: #ff0000;
+        }
+    </style>
+</head>
+<body>
+    <div id="quizContainer">
+        <p class="message">Nhấn vào nút dưới đây để bắt đầu trả lời câu hỏi! 🎉</p>
+        <button class="button" onclick="startQuiz()">Bắt đầu 🚀</button>
+        <div class="emoji">
+            😺
+        </div>
+        <img class="doremon-img" src="https://i.imgur.com/WYrJGFr.jpeg" alt="Doremon">
+    </div>
+
+    <script>
+        var currentQuestionNumber = 1;  // Bắt đầu từ câu hỏi 1
+        var score = 0;
+        var totalQuestions = 11;  // Tổng số câu hỏi
+
+        var answers = {
+            1: { correct: 'A' },
+            2: { correct: 'A' },
+            3: { correct: 'C' },
+            4: { correct: 'B' },
+            5: { correct: 'C' },
+            6: { correct: 'D' },
+            7: { correct: 'B' },
+            8: { correct: 'A' },
+            9: { correct: 'C' },
+            10: { correct: 'A' },
+            11: { correct: 'B' }
+        };
+
+        var questionData = {
+            1: {
+                question: 'Con gì miệng bò mà không phải miệng bò?',
+                image: 'https://i.imgur.com/WYrJGFr.jpeg', // Thay đổi URL ảnh tại đây
+                gif: 'https://i.imgur.com/506Y1xS.gif'  // Thay đổi URL GIF tại đây
+            },
+            2: {
+                question: 'Cái gì có một lưng với bốn chân?',
+                image: 'https://i.imgur.com/WYrJGFr.jpeg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            3: {
+                question: 'Dẫu nắng lửa tôi không bỏ bạn, sao mưa một ngày bạn đã bỏ tôi?',
+                image: 'https://www.example.com/question3-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            4: {
+                question: 'Bàn gì mà xe ngựa lúc nào cũng giơ ra?',
+                image: 'https://www.example.com/question4-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            5: {
+                question: 'Con gì có mũi có lưỡi hẳn hoi?',
+                image: 'https://www.example.com/question5-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            6: {
+                question: 'Da thì như than, áo lại như tuyết...',
+                image: 'https://www.example.com/question6-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            7: {
+                question: 'Mặt gì mát dịu đêm ngày?',
+                image: 'https://www.example.com/question7-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            8: {
+                question: 'Mặt gì là bãi chiến trường...',
+                image: 'https://www.example.com/question8-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            9: {
+                question: 'Mặt nào không bao giờ đứng yên?',
+                image: 'https://www.example.com/question9-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            10: {
+                question: 'Thân em nhỏ nhắn, dễ thương...',
+                image: 'https://www.example.com/question10-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            },
+            11: {
+                question: 'Luôn ở cao nhất trên đầu...',
+                image: 'https://www.example.com/question11-image.jpg',
+                gif: 'https://i.imgur.com/506Y1xS.gif'
+            }
+        };
+
+        // Trộn các đáp án
+        function shuffleAnswers(questionNumber) {
+            var options = ['A', 'B', 'C', 'D'];
+            var shuffled = options.sort(() => Math.random() - 0.5); // Trộn ngẫu nhiên
+            return shuffled;
+        }
+
+        function startQuiz() {
+            document.getElementById("quizContainer").innerHTML = ''; // Xóa trang đầu
+            showQuestion(currentQuestionNumber);
+        }
+
+        function showQuestion(questionNumber) {
+            var shuffledOptions = shuffleAnswers(questionNumber);
+            var correctAnswer = answers[questionNumber].correct;
+            var optionsHTML = '';
+            var questionText = questionData[questionNumber].question;
+            var questionImage = questionData[questionNumber].image;
+            var questionGif = questionData[questionNumber].gif;
+
+            shuffledOptions.forEach(function(option) {
+                optionsHTML += `
+                    <input type="radio" name="q${questionNumber}" value="${option}"> ${option}. <span id="option${option}">${getAnswerText(option, questionNumber)}</span><br>
+                `;
+            });
+
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="question">${questionText}</div>
+                <img src="${questionImage}" alt="Câu hỏi hình ảnh" width="300" height="200">
+                <img class="gif" src="${questionGif}" alt="Câu hỏi GIF">
+                <div class="options">${optionsHTML}</div>
+                <button class="button" onclick="nextQuestion(${questionNumber})">Tiếp theo</button>
+                <div class="feedback" id="feedback"></div>
+            `;
+        }
+
+        function getAnswerText(option, questionNumber) {
+            switch (questionNumber) {
+                case 1:
+                    if (option === 'A') return 'Con ốc sên';
+                    if (option === 'B') return 'Con bò';
+                    if (option === 'C') return 'Con cừu';
+                    if (option === 'D') return 'Con ngựa';
+                    break;
+                case 2:
+                    if (option === 'A') return 'Cái bàn';
+                    if (option === 'B') return 'Cái giường';
+                    if (option === 'C') return 'Cái tủ';
+                    if (option === 'D') return 'Cái ghế';
+                    break;
+                case 3:
+                    if (option === 'A') return 'Cái đèn';
+                    if (option === 'B') return 'Cái gương';
+                    if (option === 'C') return 'Cái bóng';
+                    if (option === 'D') return 'Cái cửa sổ';
+                    break;
+                case 4:
+                    if (option === 'A') return 'Bàn ăn';
+                    if (option === 'B') return 'Bàn cờ';
+                    if (option === 'C') return 'Bàn học';
+                    if (option === 'D') return 'Bàn làm việc';
+                    break;
+                case 5:
+                    if (option === 'A') return 'Con búa';
+                    if (option === 'B') return 'Con kéo';
+                    if (option === 'C') return 'Con dao';
+                    if (option === 'D') return 'Con kéo cắt';
+                    break;
+                case 6:
+                    if (option === 'A') return 'Con gà bình thường';
+                    if (option === 'B') return 'Con vịt';
+                    if (option === 'C') return 'Con chó';
+                    if (option === 'D') return 'Gà ác';
+                    break;
+                case 7:
+                    if (option === 'A') return 'Mặt trời';
+                    if (option === 'B') return 'Mặt trăng';
+                    if (option === 'C') return 'Mặt đất';
+                    if (option === 'D') return 'Mặt người';
+                    break;
+                case 8:
+                    if (option === 'A') return 'Mặt trận';
+                    if (option === 'B') return 'Mặt trời';
+                    if (option === 'C') return 'Mặt biển';
+                    if (option === 'D') return 'Mặt trăng';
+                    break;
+                case 9:
+                    if (option === 'A') return 'Mặt trời';
+                    if (option === 'B') return 'Mặt biển';
+                    if (option === 'C') return 'Mặt sông';
+                    if (option === 'D') return 'Mặt đất';
+                    break;
+                case 10:
+                    if (option === 'A') return 'Cây kim';
+                    if (option === 'B') return 'Cây dao';
+                    if (option === 'C') return 'Cây kéo';
+                    if (option === 'D') return 'Cây thước';
+                    break;
+                case 11:
+                    if (option === 'A') return 'Cái đầu';
+                    if (option === 'B') return 'Cái chân';
+                    if (option === 'C') return 'Cái tay';
+                    if (option === 'D') return 'Cái thân';
+                    break;
+                default:
+                    return '';
+            }
+        }
+
+        function nextQuestion(questionNumber) {
+            var selectedOption = document.querySelector(`input[name="q${questionNumber}"]:checked`);
+            if (selectedOption) {
+                var selectedAnswer = selectedOption.value;
+                var correctAnswer = answers[questionNumber].correct;
+                if (selectedAnswer === correctAnswer) {
+                    score++;
+                    document.getElementById('feedback').innerHTML = `<span class="correct">Chính xác!</span>`;
+                } else {
+                    document.getElementById('feedback').innerHTML = `<span class="incorrect">Sai rồi! Đáp án đúng là ${correctAnswer}.</span>`;
+                }
+                currentQuestionNumber++;
+                if (currentQuestionNumber <= totalQuestions) {
+                    showQuestion(currentQuestionNumber);
+                } else {
+                    showResult();
+                }
+            } else {
+                document.getElementById('feedback').innerHTML = `<span class="incorrect">Vui lòng chọn một đáp án!</span>`;
+            }
+        }
+
+        function showResult() {
+            var resultMessage = `Kết quả: ${score} / ${totalQuestions}`;
+            var resultText = score >= totalQuestions / 2 ? 'Bạn đã trả lời đúng rất nhiều câu!' : 'Hãy cố gắng thêm nhé!';
+            document.getElementById('quizContainer').innerHTML = `
+                <div class="quiz-result">${resultMessage}</div>
+                <div class="message">${resultText}</div>
+                <div class="emoji">🎉</div>
+            `;
+        }
+    </script>
+</body>
+</html>
